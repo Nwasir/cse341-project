@@ -1,0 +1,14 @@
+{
+  "name": "cse341-project",
+  "version": "1.0.0",
+  "description": "CSE 341 personal assignment - Node.js web server deployed to Render",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "Nnanna Arua Uko",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
+}

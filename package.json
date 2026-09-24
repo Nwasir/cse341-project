@@ -1,14 +1,17 @@
 {
   "name": "cse341-project",
   "version": "1.0.0",
-  "description": "CSE 341 personal assignment - Node.js web server deployed to Render",
+  "description": "CSE 341 - Node.js web server and REST API for the professional frontend",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "seed": "node scripts/seed.js"
   },
   "author": "Nnanna Arua Uko",
   "license": "ISC",
   "dependencies": {
-    "express": "^5.2.1"
+    "dotenv": "^18.0.3",
+    "express": "^5.2.1",
+    "mongodb": "^7.6.0"
   }
 }

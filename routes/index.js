@@ -4,5 +4,6 @@ const router = express.Router();
 const controller = require('../controllers');
 
 router.get('/', controller.home);
+router.use('/professional', require('./professional'));
 
 module.exports = router;

@@ -1,0 +1,5 @@
+### Home route
+GET http://localhost:8080/
+
+### Get all data for the professional frontend
+GET http://localhost:8080/professional

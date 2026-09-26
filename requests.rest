@@ -1,5 +1,5 @@
 @localhost = http://localhost:8080
-@render = https://cse341-project.onrender.com
+@render = https://cse341-project-zc0u.onrender.com
 
 ########## Localhost ##########
 

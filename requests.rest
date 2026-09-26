@@ -1,5 +1,44 @@
+@localhost = http://localhost:8080
+@render = https://cse341-project.onrender.com
+
+########## Localhost ##########
+
 ### Home route
-GET http://localhost:8080/
+GET {{localhost}}/
 
 ### Get all data for the professional frontend
-GET http://localhost:8080/professional
+GET {{localhost}}/professional
+
+### Get all contacts
+# @name localContacts
+GET {{localhost}}/contacts
+
+### Get a single contact by id (uses the first id from "Get all contacts" above)
+GET {{localhost}}/contacts/{{localContacts.response.body.$[0]._id}}
+
+### Get a single contact using an id query parameter
+GET {{localhost}}/contacts?id={{localContacts.response.body.$[0]._id}}
+
+### Invalid id (400)
+GET {{localhost}}/contacts/12345
+
+### Id that does not exist (404)
+GET {{localhost}}/contacts/000000000000000000000000
+
+########## Render ##########
+
+### Home route
+GET {{render}}/
+
+### Get all data for the professional frontend
+GET {{render}}/professional
+
+### Get all contacts
+# @name renderContacts
+GET {{render}}/contacts
+
+### Get a single contact by id (uses the first id from "Get all contacts" above)
+GET {{render}}/contacts/{{renderContacts.response.body.$[0]._id}}
+
+### Get a single contact using an id query parameter
+GET {{render}}/contacts?id={{renderContacts.response.body.$[0]._id}}

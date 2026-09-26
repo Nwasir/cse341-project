@@ -1,8 +1,11 @@
 {
   "name": "cse341-project",
   "version": "1.0.0",
-  "description": "CSE 341 - Node.js web server and REST API for the professional frontend",
+  "description": "CSE 341 - Node.js web server and REST API (professional frontend and contacts)",
   "main": "server.js",
+  "engines": {
+    "node": ">=20.19.0"
+  },
   "scripts": {
     "start": "node server.js",
     "seed": "node scripts/seed.js"

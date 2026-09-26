@@ -5,5 +5,6 @@ const controller = require('../controllers');
 
 router.get('/', controller.home);
 router.use('/professional', require('./professional'));
+router.use('/contacts', require('./contacts'));
 
 module.exports = router;

@@ -1,6 +1,10 @@
 @localhost = http://localhost:8080
 @render = https://cse341-project-zc0u.onrender.com
 
+# Send the requests in order: the GET by id requests use the first id from
+# "Get all contacts", and the GET, PUT and DELETE requests after
+# "Create a contact" use the id that it returns.
+
 ########## Localhost ##########
 
 ### Home route
@@ -25,6 +29,67 @@ GET {{localhost}}/contacts/12345
 ### Id that does not exist (404)
 GET {{localhost}}/contacts/000000000000000000000000
 
+### Create a contact (201, returns the new contact's id)
+# @name localNewContact
+POST {{localhost}}/contacts
+Content-Type: application/json
+
+{
+  "firstName": "Ngozi",
+  "lastName": "Eze",
+  "email": "ngozieze@example.com",
+  "favoriteColor": "Yellow",
+  "birthday": "1999-09-09"
+}
+
+### Get the contact created above
+GET {{localhost}}/contacts/{{localNewContact.response.body.$.id}}
+
+### Update the contact created above (204)
+PUT {{localhost}}/contacts/{{localNewContact.response.body.$.id}}
+Content-Type: application/json
+
+{
+  "firstName": "Ngozi",
+  "lastName": "Eze",
+  "email": "ngozi.eze@example.com",
+  "favoriteColor": "Orange",
+  "birthday": "1999-09-09"
+}
+
+### Get the contact again to see the update
+GET {{localhost}}/contacts/{{localNewContact.response.body.$.id}}
+
+### Delete the contact created above (200)
+DELETE {{localhost}}/contacts/{{localNewContact.response.body.$.id}}
+
+### Get the deleted contact (404)
+GET {{localhost}}/contacts/{{localNewContact.response.body.$.id}}
+
+### Create a contact with missing fields (400)
+POST {{localhost}}/contacts
+Content-Type: application/json
+
+{
+  "firstName": "Ngozi",
+  "lastName": "Eze"
+}
+
+### Update a contact that does not exist (404)
+PUT {{localhost}}/contacts/000000000000000000000000
+Content-Type: application/json
+
+{
+  "firstName": "Ngozi",
+  "lastName": "Eze",
+  "email": "ngozieze@example.com",
+  "favoriteColor": "Yellow",
+  "birthday": "1999-09-09"
+}
+
+### Delete a contact that does not exist (404)
+DELETE {{localhost}}/contacts/000000000000000000000000
+
 ########## Render ##########
 
 ### Home route
@@ -42,3 +107,40 @@ GET {{render}}/contacts/{{renderContacts.response.body.$[0]._id}}
 
 ### Get a single contact using an id query parameter
 GET {{render}}/contacts?id={{renderContacts.response.body.$[0]._id}}
+
+### Create a contact (201, returns the new contact's id)
+# @name renderNewContact
+POST {{render}}/contacts
+Content-Type: application/json
+
+{
+  "firstName": "Emeka",
+  "lastName": "Obi",
+  "email": "emekaobi@example.com",
+  "favoriteColor": "Red",
+  "birthday": "1997-04-18"
+}
+
+### Get the contact created above
+GET {{render}}/contacts/{{renderNewContact.response.body.$.id}}
+
+### Update the contact created above (204)
+PUT {{render}}/contacts/{{renderNewContact.response.body.$.id}}
+Content-Type: application/json
+
+{
+  "firstName": "Emeka",
+  "lastName": "Obi",
+  "email": "emeka.obi@example.com",
+  "favoriteColor": "Black",
+  "birthday": "1997-04-18"
+}
+
+### Get the contact again to see the update
+GET {{render}}/contacts/{{renderNewContact.response.body.$.id}}
+
+### Delete the contact created above (200)
+DELETE {{render}}/contacts/{{renderNewContact.response.body.$.id}}
+
+### Get the deleted contact (404)
+GET {{render}}/contacts/{{renderNewContact.response.body.$.id}}

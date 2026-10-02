@@ -7,13 +7,26 @@ const app = express();
 const port = process.env.PORT || 8080;
 
 // The frontend is opened straight from the file system (file://),
-// so the browser needs this header to allow it to call the API.
+// so the browser needs these headers to allow it to call the API,
+// including POST and PUT requests that send a JSON body.
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   next();
 });
 
+// Reads JSON request bodies (POST and PUT /contacts) into req.body.
+app.use(express.json());
+
 app.use('/', require('./routes'));
+
+// Sends errors as JSON instead of Express's HTML error page,
+// e.g. a 400 when a request body is not valid JSON.
+app.use((err, req, res, next) => {
+  if (res.headersSent) return next(err);
+  res.status(err.status || 500).json({ message: err.message });
+});
 
 const start = async () => {
   if (process.env.MONGODB_URI) {

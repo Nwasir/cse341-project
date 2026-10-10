@@ -1,0 +1,251 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Temple API",
+    "description": "Temples of The Church of Jesus Christ of Latter-day Saints, with their location and dedication date.",
+    "version": "1.0.0"
+  },
+  "host": "localhost:8080",
+  "basePath": "/",
+  "schemes": [
+    "http"
+  ],
+  "securityDefinitions": {
+    "apiKeyAuth": {
+      "type": "apiKey",
+      "in": "header",
+      "name": "apiKey",
+      "description": "Click Authorize and enter the API key. Without a valid key these routes still respond 200, but the body is the text \"Invalid apiKey, please read the documentation.\""
+    }
+  },
+  "paths": {
+    "/temples/": {
+      "get": {
+        "tags": [
+          "Temples"
+        ],
+        "summary": "Get all temples",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "Every temple",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Temple"
+              },
+              "xml": {
+                "name": "main"
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Temples"
+        ],
+        "summary": "Create a temple",
+        "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "The temple to add. name is required.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/TempleInput"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The new temple, including its _id",
+            "schema": {
+              "$ref": "#/definitions/Temple"
+            }
+          },
+          "400": {
+            "description": "name is missing"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/temples/{temple_id}": {
+      "get": {
+        "tags": [
+          "Temples"
+        ],
+        "summary": "Get a temple by temple_id",
+        "description": "",
+        "parameters": [
+          {
+            "name": "temple_id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "The temple_id, e.g. 1"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The temple",
+            "schema": {
+              "$ref": "#/definitions/Temple"
+            }
+          },
+          "404": {
+            "description": "No temple has that temple_id"
+          },
+          "500": {
+            "description": "temple_id is not a number, or the database failed"
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "Temples"
+        ],
+        "summary": "Update a temple by temple_id",
+        "description": "Changes only the fields sent in the body.",
+        "parameters": [
+          {
+            "name": "temple_id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "The temple_id, e.g. 267"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "The fields to change",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/TempleInput"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Temple was updated successfully."
+          },
+          "400": {
+            "description": "The body is empty"
+          },
+          "404": {
+            "description": "No temple has that temple_id"
+          },
+          "500": {
+            "description": "temple_id is not a number, or the database failed"
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Temples"
+        ],
+        "summary": "Delete a temple by temple_id",
+        "description": "",
+        "parameters": [
+          {
+            "name": "temple_id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "description": "The temple_id, e.g. 267"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Temple was deleted successfully!"
+          },
+          "404": {
+            "description": "No temple has that temple_id"
+          },
+          "500": {
+            "description": "temple_id is not a number, or the database failed"
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "Temple": {
+      "type": "object",
+      "properties": {
+        "temple_id": {
+          "type": "number",
+          "example": 1
+        },
+        "name": {
+          "type": "string",
+          "example": "Aba Nigeria Temple"
+        },
+        "location": {
+          "type": "string",
+          "example": "Aba, Abia, Nigeria"
+        },
+        "dedicated": {
+          "type": "string",
+          "example": "7 August 2005"
+        },
+        "additionalInfo": {
+          "type": "boolean",
+          "example": false
+        }
+      }
+    },
+    "TempleInput": {
+      "type": "object",
+      "properties": {
+        "temple_id": {
+          "type": "number",
+          "example": 267
+        },
+        "name": {
+          "type": "string",
+          "example": "Test Temple"
+        },
+        "location": {
+          "type": "string",
+          "example": "Rexburg, Idaho, United States"
+        },
+        "dedicated": {
+          "type": "string",
+          "example": "Announced"
+        },
+        "additionalInfo": {
+          "type": "boolean",
+          "example": false
+        }
+      }
+    }
+  }
+}

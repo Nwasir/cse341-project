@@ -22,4 +22,18 @@ module.exports = [
     favoriteColor: 'Blue',
     birthday: '1995-11-05',
   },
+  {
+    firstName: 'Kelechi',
+    lastName: 'Nnamdi',
+    email: 'kelechinnamdi@example.com',
+    favoriteColor: 'Orange',
+    birthday: '1996-01-30',
+  },
+  {
+    firstName: 'Zainab',
+    lastName: 'Bello',
+    email: 'zainabbello@example.com',
+    favoriteColor: 'Pink',
+    birthday: '2001-05-09',
+  },
 ];

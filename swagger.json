@@ -1,0 +1,310 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Contacts API",
+    "description": "Create, read, update and delete contacts stored in MongoDB. Each contact has a firstName, lastName, email, favoriteColor and birthday.",
+    "version": "1.0.0"
+  },
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "Contacts",
+      "description": "The contacts collection"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/contacts/": {
+      "get": {
+        "tags": [
+          "Contacts"
+        ],
+        "summary": "Get all contacts",
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "Every contact in the database",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Contact"
+              }
+            }
+          },
+          "500": {
+            "description": "The database request failed",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "503": {
+            "description": "The server is not connected to MongoDB",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Contacts"
+        ],
+        "summary": "Create a contact",
+        "description": "All five fields are required. Anything else in the body, including an _id, is ignored.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "The new contact",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Contact"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created. The Location header is the new contact's url.",
+            "schema": {
+              "$ref": "#/definitions/ContactId"
+            }
+          },
+          "400": {
+            "description": "A field is missing or empty, or the body is not valid JSON",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "The database request failed",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "503": {
+            "description": "The server is not connected to MongoDB",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    },
+    "/contacts/{id}": {
+      "get": {
+        "tags": [
+          "Contacts"
+        ],
+        "summary": "Get a contact by id",
+        "description": "GET /contacts?id={id} returns the same contact.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The contact's _id, copied from Get all contacts"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The contact",
+            "schema": {
+              "$ref": "#/definitions/Contact"
+            }
+          },
+          "400": {
+            "description": "The id is not a 24 character hex string",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "No contact has this id",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "The database request failed",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "503": {
+            "description": "The server is not connected to MongoDB",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Contacts"
+        ],
+        "summary": "Update a contact",
+        "description": "Replaces all five fields, so every field is required. The _id never changes.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The contact's _id, copied from Get all contacts"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "description": "The contact's new values",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Contact"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Updated. The response has no body."
+          },
+          "400": {
+            "description": "The id is not a 24 character hex string, a field is missing or empty, or the body is not valid JSON",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "No contact has this id",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "The database request failed",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "503": {
+            "description": "The server is not connected to MongoDB",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Contacts"
+        ],
+        "summary": "Delete a contact",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "description": "The contact's _id, copied from Get all contacts"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Deleted. The body is the contact that was deleted.",
+            "schema": {
+              "$ref": "#/definitions/Contact"
+            }
+          },
+          "400": {
+            "description": "The id is not a 24 character hex string",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "No contact has this id",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "The database request failed",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "503": {
+            "description": "The server is not connected to MongoDB",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "Contact": {
+      "type": "object",
+      "required": [
+        "firstName",
+        "lastName",
+        "email",
+        "favoriteColor",
+        "birthday"
+      ],
+      "properties": {
+        "_id": {
+          "type": "string",
+          "readOnly": true,
+          "description": "Created by MongoDB. Ignored if sent in a request body.",
+          "example": "64f1c2e9a1b2c3d4e5f60718"
+        },
+        "firstName": {
+          "type": "string",
+          "example": "Ngozi"
+        },
+        "lastName": {
+          "type": "string",
+          "example": "Eze"
+        },
+        "email": {
+          "type": "string",
+          "example": "ngozieze@example.com"
+        },
+        "favoriteColor": {
+          "type": "string",
+          "example": "Yellow"
+        },
+        "birthday": {
+          "type": "string",
+          "example": "1999-09-09"
+        }
+      }
+    },
+    "ContactId": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The new contact's _id",
+          "example": "64f1c2e9a1b2c3d4e5f60718"
+        }
+      }
+    },
+    "Error": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string",
+          "description": "Explains what went wrong"
+        }
+      }
+    }
+  }
+}

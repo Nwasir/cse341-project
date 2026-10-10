@@ -13,6 +13,9 @@ GET {{localhost}}/
 ### Get all data for the professional frontend
 GET {{localhost}}/professional
 
+### API documentation (Swagger UI). Open this url in a browser to try each route.
+GET {{localhost}}/api-docs/
+
 ### Get all contacts
 # @name localContacts
 GET {{localhost}}/contacts
@@ -60,7 +63,7 @@ Content-Type: application/json
 ### Get the contact again to see the update
 GET {{localhost}}/contacts/{{localNewContact.response.body.$.id}}
 
-### Delete the contact created above (200)
+### Delete the contact created above (200, returns the deleted contact)
 DELETE {{localhost}}/contacts/{{localNewContact.response.body.$.id}}
 
 ### Get the deleted contact (404)
@@ -97,6 +100,9 @@ GET {{render}}/
 
 ### Get all data for the professional frontend
 GET {{render}}/professional
+
+### API documentation (Swagger UI). Open this url in a browser to try each route.
+GET {{render}}/api-docs/
 
 ### Get all contacts
 # @name renderContacts
@@ -139,7 +145,7 @@ Content-Type: application/json
 ### Get the contact again to see the update
 GET {{render}}/contacts/{{renderNewContact.response.body.$.id}}
 
-### Delete the contact created above (200)
+### Delete the contact created above (200, returns the deleted contact)
 DELETE {{render}}/contacts/{{renderNewContact.response.body.$.id}}
 
 ### Get the deleted contact (404)

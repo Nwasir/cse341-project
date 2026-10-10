@@ -45,6 +45,17 @@ const missingFields = (res, missing) =>
 // Returns every document in the contacts collection.
 // GET /contacts?id=<id> is handed to getSingle.
 const getAll = async (req, res) => {
+  /*
+    #swagger.tags = ['Contacts']
+    #swagger.summary = 'Get all contacts'
+    #swagger.autoQuery = false
+    #swagger.responses[200] = {
+      description: 'Every contact in the database',
+      '@schema': { type: 'array', items: { $ref: '#/definitions/Contact' } }
+    }
+    #swagger.responses[500] = { description: 'The database request failed', schema: { $ref: '#/definitions/Error' } }
+    #swagger.responses[503] = { description: 'The server is not connected to MongoDB', schema: { $ref: '#/definitions/Error' } }
+  */
   if (req.query.id) return getSingle(req, res);
   if (!mongodb.isConnected()) return notConnected(res);
 
@@ -59,6 +70,18 @@ const getAll = async (req, res) => {
 // GET /contacts/:id  or  GET /contacts?id=<id>
 // Returns the contact whose _id matches the id.
 const getSingle = async (req, res) => {
+  /*
+    #swagger.tags = ['Contacts']
+    #swagger.summary = 'Get a contact by id'
+    #swagger.description = 'GET /contacts?id={id} returns the same contact.'
+    #swagger.autoQuery = false
+    #swagger.parameters['id'] = { description: 'The contact\'s _id, copied from Get all contacts' }
+    #swagger.responses[200] = { description: 'The contact', schema: { $ref: '#/definitions/Contact' } }
+    #swagger.responses[400] = { description: 'The id is not a 24 character hex string', schema: { $ref: '#/definitions/Error' } }
+    #swagger.responses[404] = { description: 'No contact has this id', schema: { $ref: '#/definitions/Error' } }
+    #swagger.responses[500] = { description: 'The database request failed', schema: { $ref: '#/definitions/Error' } }
+    #swagger.responses[503] = { description: 'The server is not connected to MongoDB', schema: { $ref: '#/definitions/Error' } }
+  */
   if (!mongodb.isConnected()) return notConnected(res);
 
   const id = req.params.id || req.query.id;
@@ -82,6 +105,24 @@ const getSingle = async (req, res) => {
 // Creates a contact from the JSON body. All fields are required.
 // Responds 201 with the new contact's id.
 const createContact = async (req, res) => {
+  /*
+    #swagger.tags = ['Contacts']
+    #swagger.summary = 'Create a contact'
+    #swagger.description = 'All five fields are required. Anything else in the body, including an _id, is ignored.'
+    #swagger.parameters['body'] = {
+      in: 'body',
+      description: 'The new contact',
+      required: true,
+      schema: { $ref: '#/definitions/Contact' }
+    }
+    #swagger.responses[201] = {
+      description: 'Created. The Location header is the new contact\'s url.',
+      schema: { $ref: '#/definitions/ContactId' }
+    }
+    #swagger.responses[400] = { description: 'A field is missing or empty, or the body is not valid JSON', schema: { $ref: '#/definitions/Error' } }
+    #swagger.responses[500] = { description: 'The database request failed', schema: { $ref: '#/definitions/Error' } }
+    #swagger.responses[503] = { description: 'The server is not connected to MongoDB', schema: { $ref: '#/definitions/Error' } }
+  */
   if (!mongodb.isConnected()) return notConnected(res);
 
   const { contact, missing } = readContact(req.body);
@@ -105,6 +146,23 @@ const createContact = async (req, res) => {
 // The id in the url is only used to find the contact; it is never changed.
 // Responds 204 with no body.
 const updateContact = async (req, res) => {
+  /*
+    #swagger.tags = ['Contacts']
+    #swagger.summary = 'Update a contact'
+    #swagger.description = 'Replaces all five fields, so every field is required. The _id never changes.'
+    #swagger.parameters['id'] = { description: 'The contact\'s _id, copied from Get all contacts' }
+    #swagger.parameters['body'] = {
+      in: 'body',
+      description: 'The contact\'s new values',
+      required: true,
+      schema: { $ref: '#/definitions/Contact' }
+    }
+    #swagger.responses[204] = { description: 'Updated. The response has no body.' }
+    #swagger.responses[400] = { description: 'The id is not a 24 character hex string, a field is missing or empty, or the body is not valid JSON', schema: { $ref: '#/definitions/Error' } }
+    #swagger.responses[404] = { description: 'No contact has this id', schema: { $ref: '#/definitions/Error' } }
+    #swagger.responses[500] = { description: 'The database request failed', schema: { $ref: '#/definitions/Error' } }
+    #swagger.responses[503] = { description: 'The server is not connected to MongoDB', schema: { $ref: '#/definitions/Error' } }
+  */
   if (!mongodb.isConnected()) return notConnected(res);
 
   const { id } = req.params;
@@ -128,22 +186,32 @@ const updateContact = async (req, res) => {
 };
 
 // DELETE /contacts/:id
-// Deletes the contact. Responds 200 with a confirmation message.
+// Deletes the contact. Responds 200 with the contact that was deleted.
 const deleteContact = async (req, res) => {
+  /*
+    #swagger.tags = ['Contacts']
+    #swagger.summary = 'Delete a contact'
+    #swagger.parameters['id'] = { description: 'The contact\'s _id, copied from Get all contacts' }
+    #swagger.responses[200] = { description: 'Deleted. The body is the contact that was deleted.', schema: { $ref: '#/definitions/Contact' } }
+    #swagger.responses[400] = { description: 'The id is not a 24 character hex string', schema: { $ref: '#/definitions/Error' } }
+    #swagger.responses[404] = { description: 'No contact has this id', schema: { $ref: '#/definitions/Error' } }
+    #swagger.responses[500] = { description: 'The database request failed', schema: { $ref: '#/definitions/Error' } }
+    #swagger.responses[503] = { description: 'The server is not connected to MongoDB', schema: { $ref: '#/definitions/Error' } }
+  */
   if (!mongodb.isConnected()) return notConnected(res);
 
   const { id } = req.params;
   if (!isValidId(id)) return invalidId(res);
 
   try {
-    const result = await mongodb
+    const contact = await mongodb
       .getDb()
       .collection('contacts')
-      .deleteOne({ _id: new ObjectId(id) });
+      .findOneAndDelete({ _id: new ObjectId(id) });
 
-    if (result.deletedCount === 0) return notFound(res, id);
+    if (!contact) return notFound(res, id);
 
-    res.status(200).json({ message: `Deleted contact with id ${id}` });
+    res.status(200).json(contact);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
